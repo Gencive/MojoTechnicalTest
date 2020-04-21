@@ -1,0 +1,2 @@
+rootProject.name='MojoTechnicalTest'
+include ':app'
