@@ -1,5 +1,6 @@
 package com.example.mojotechnicaltest
 
+import android.util.Log
 import java.io.*
 import java.net.URL
 import java.net.URLEncoder
@@ -11,12 +12,8 @@ class ApiManager {
         private const val API_URL = "https://27.ip-51-83-69.eu/technical_test/encoder/"
     }
 
-    private val apiConnection: HttpsURLConnection
-
-    init {
-        apiConnection = URL(API_URL).openConnection() as HttpsURLConnection
-
-        apiConnection.apply {
+    private fun getApiConnection(): HttpsURLConnection {
+        return (URL(API_URL).openConnection() as HttpsURLConnection).apply {
             requestMethod = "POST"
             doInput = true
             doOutput = true
@@ -25,6 +22,7 @@ class ApiManager {
 
     // Todo: handle error
     suspend fun encodePictureAndText(picture: String, text: String): String {
+        val apiConnection = getApiConnection()
         val os: OutputStream = apiConnection.outputStream
 
         val writer = BufferedWriter(OutputStreamWriter(os, "UTF-8"))
@@ -41,10 +39,10 @@ class ApiManager {
         writer.close()
         os.close()
 
-        return handleResponse()
+        return handleResponse(apiConnection)
     }
 
-    private fun handleResponse(): String {
+    private fun handleResponse(apiConnection: HttpsURLConnection): String {
         val responseCode: Int = apiConnection.responseCode
 
         var response = ""
@@ -56,6 +54,9 @@ class ApiManager {
                 response += line
             }
         }
+
+        apiConnection.disconnect()
+
         return response
     }
 
