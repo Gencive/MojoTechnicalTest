@@ -1,8 +1,26 @@
 package com.example.mojotechnicaltest
 
-class EncodingManager  {
+import android.util.Base64
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-    fun toBase64(): String = ""
+class EncodingManager {
 
-    fun stenographyEncoding(picturePath: String, messageToEncode: String): String = ""
+    private val apiManager = ApiManager()
+
+    private fun toBase64(toEncrypt: ByteArray): String = Base64.encodeToString(toEncrypt, Base64.DEFAULT)
+
+    fun stenographyEncoding(
+        picturePath: ByteArray,
+        messageToEncode: String,
+        callback: (String) -> Unit
+    ) {
+        GlobalScope.launch {
+            val encodedPicture =
+                apiManager.encodePictureAndText(toBase64(picturePath), messageToEncode)
+
+            callback.invoke(encodedPicture)
+        }
+    }
+
 }
