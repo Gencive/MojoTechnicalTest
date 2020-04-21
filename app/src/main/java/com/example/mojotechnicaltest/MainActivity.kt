@@ -24,14 +24,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // todo handle negative response
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 4)
-        }
-
         btnAdd.setOnClickListener { startFilePicker() }
     }
 
@@ -59,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleFilePickerResult(data: Intent?) {
         data?.data?.let {
             uriToBytesArray(this, it) { byteArray ->
-                stenographyManager.encodeTextAndPicture(byteArray, "Bonjour")
+                stenographyManager.encodeTextAndPicture(this, byteArray, "Bonjour")
             }
         }
     }
