@@ -1,6 +1,7 @@
 package com.example.mojotechnicaltest
 
 import android.util.Base64
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -19,7 +20,9 @@ class EncodingManager {
             val encodedPicture =
                 apiManager.encodePictureAndText(toBase64(picturePath), messageToEncode)
 
-            callback.invoke(encodedPicture)
+            GlobalScope.launch(Dispatchers.Main) {
+                callback.invoke(encodedPicture)
+            }
         }
     }
 

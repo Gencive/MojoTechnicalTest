@@ -42,13 +42,10 @@ fun uriToBytesArray(context: Context, uri: Uri, callback: (ByteArray) -> Unit) {
 }
 
 fun saveBytesAsImageOnDisk(context: Context, bytes: ByteArray) {
-    val internalDir = context.filesDir
-    val encodedDir = File(internalDir, "encoded")
+    val encodedDir = getEncodedDir(context)
 
-    if (!encodedDir.exists()) {
-        encodedDir.mkdir()
-    }
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+
     val imageFileName = "$timeStamp.jpg"
     val imageFile = File(encodedDir, imageFileName)
     imageFile.createNewFile()
@@ -56,4 +53,21 @@ fun saveBytesAsImageOnDisk(context: Context, bytes: ByteArray) {
     val fos = FileOutputStream(imageFile)
     fos.write(bytes)
     fos.close()
+}
+
+private fun getEncodedDir(context: Context): File {
+    return File(context.filesDir, "encoded").also { encodedDir ->
+        if (!encodedDir.exists()) {
+            encodedDir.mkdir()
+        }
+    }
+}
+
+fun getFilesOnEncodedDir(context: Context): List<String> {
+    val encodedFiles = mutableListOf<String>()
+
+    getEncodedDir(context).listFiles()?.forEach { file ->
+            encodedFiles.add(file.path)
+    }
+    return encodedFiles
 }

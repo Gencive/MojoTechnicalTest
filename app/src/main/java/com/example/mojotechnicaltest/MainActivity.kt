@@ -2,29 +2,48 @@ package com.example.mojotechnicaltest
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
-       private const val REQUEST_CODE_SELECT_PICTURE = 2
+        private const val REQUEST_CODE_SELECT_PICTURE = 2
     }
 
     private val stenographyManager: StenographyManager by lazy {
         StenographyManager()
     }
 
+    private val encodedItemsAdapter = EncodedItemsAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setListener()
+
+        setupEncodedList()
+    }
+
+    private fun setListener() {
         btnAdd.setOnClickListener { startFilePicker() }
+    }
+
+    private fun setupEncodedList() {
+        rvEncoded.layoutManager = LinearLayoutManager(this)
+        rvEncoded.adapter = encodedItemsAdapter
+
+        displayEncodedList()
+    }
+
+    private fun displayEncodedList() {
+        stenographyManager.getEncodedItems(this).let {
+            encodedItemsAdapter.setData(it)
+        }
     }
 
     private fun startFilePicker() {
@@ -51,7 +70,9 @@ class MainActivity : AppCompatActivity() {
     private fun handleFilePickerResult(data: Intent?) {
         data?.data?.let {
             uriToBytesArray(this, it) { byteArray ->
-                stenographyManager.encodeTextAndPicture(this, byteArray, "Bonjour")
+                stenographyManager.encodeTextAndPicture(this, byteArray, "Bonjour") {
+                    displayEncodedList()
+                }
             }
         }
     }
