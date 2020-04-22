@@ -1,9 +1,8 @@
 package com.example.mojotechnicaltest
 
 import android.content.Context
-import android.util.Log
 import com.example.mojotechnicaltest.models.EncodedItem
-import java.net.URL
+
 
 class StenographyManager {
 

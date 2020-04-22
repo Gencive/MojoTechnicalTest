@@ -5,7 +5,10 @@ import com.example.mojotechnicaltest.models.Pixel
 
 class DecodingManager {
 
-    fun fromBase64(toDecode: String): ByteArray = Base64.decode(toDecode, Base64.NO_CLOSE)
+    // Todo, check why it's end by null
+    fun fromBase64(toDecode: String): ByteArray {
+        return Base64.decode(toDecode.removeSuffix("null"), Base64.NO_WRAP or Base64.NO_PADDING)
+    }
 
     fun stenographyDecoding(picturePath: String): String {
         val pixels = ImageUtils.imagePathToRgbValues(picturePath)
