@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/edTextToEncode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:inputType="text"
+        android:textColor="#000000"
+        android:textColorHint="#bdbdbd"
+        android:hint="Enter your text here"
+        />
+
+    <Button
+        android:id="@+id/btnEncode"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:layout_marginVertical="16dp"
+        android:layout_gravity="center_horizontal"
+        android:textAllCaps="false"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#FFFFFF"
+        android:text="Encode"
+        />
+
+</LinearLayout>
