@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleFilePickerResult(data: Intent?) {
         data?.data?.let {
-            uriToBytesArray(this, it) { byteArray ->
+            ImageUtils.imageUriToBytesArray(this, it) { byteArray ->
                 stenographyManager.encodeTextAndPicture(this, byteArray, "Bonjour") {
                     displayEncodedList()
                 }

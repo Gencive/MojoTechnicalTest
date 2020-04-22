@@ -17,14 +17,14 @@ class StenographyManager {
         onSuccess: () -> Unit
     ) {
         encodingManager.stenographyEncoding(byteArray, textToEncode) { encodedRes ->
-            saveBytesAsImageOnDisk(context, decodingManager.fromBase64(encodedRes))
+            ImageUtils.saveBytesAsImageOnDisk(context, decodingManager.fromBase64(encodedRes))
             onSuccess()
         }
     }
 
     fun getEncodedItems(context: Context): List<EncodedItem> {
-        return getFilesOnEncodedDir(context).map {
-            EncodedItem(it, decodingManager.stenographyDecoding(context, it))
+        return ImageUtils.getFilesOnEncodedDir(context).map {
+            EncodedItem(it, decodingManager.stenographyDecoding(it))
         }
     }
 }
