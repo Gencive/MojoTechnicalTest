@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_encoded_data.view.*
 
 class EncodedItemsAdapter : RecyclerView.Adapter<EncodedItemsAdapter.ViewHolder>() {
 
-    private val encodedItems: MutableList<EncodedItem> = mutableListOf()
+    private var encodedItems: List<EncodedItem> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): ViewHolder {
@@ -27,17 +27,9 @@ class EncodedItemsAdapter : RecyclerView.Adapter<EncodedItemsAdapter.ViewHolder>
     override fun getItemCount() = encodedItems.size
 
     fun setData(newEncodedData: List<EncodedItem>) {
-        val diffResult = DiffUtil.calculateDiff(
-            DiffUtilCallback(
-                encodedItems,
-                newEncodedData
-            )
-        )
+        this.encodedItems = newEncodedData
 
-        this.encodedItems.clear()
-        this.encodedItems.addAll(newEncodedData)
-
-        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -49,23 +41,5 @@ class EncodedItemsAdapter : RecyclerView.Adapter<EncodedItemsAdapter.ViewHolder>
 
             itemView.tvHiddenMessage.text = encodedItem.hiddenText
         }
-    }
-
-    class DiffUtilCallback(
-        private val newList: List<EncodedItem>,
-        private val oldList: List<EncodedItem>
-    ) : DiffUtil.Callback() {
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return newList[newItemPosition].picturePath == oldList[oldItemPosition].picturePath
-        }
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return newList[newItemPosition] == oldList[oldItemPosition]
-        }
-
-        override fun getOldListSize(): Int = oldList.size
-
-        override fun getNewListSize(): Int = newList.size
     }
 }
