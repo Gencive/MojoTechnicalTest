@@ -51,7 +51,10 @@ class ApiManager {
             val br = BufferedReader(InputStreamReader(apiConnection.inputStream))
             while (line != null) {
                 line = br.readLine()
-                response += line
+
+                if (line != null) {
+                    response += line
+                }
             }
         }
 

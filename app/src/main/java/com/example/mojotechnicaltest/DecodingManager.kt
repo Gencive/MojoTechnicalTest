@@ -7,7 +7,7 @@ class DecodingManager {
 
     // Todo, check why it's end by null
     fun fromBase64(toDecode: String): ByteArray {
-        return Base64.decode(toDecode.removeSuffix("null"), Base64.NO_WRAP or Base64.NO_PADDING)
+        return Base64.decode(toDecode, Base64.NO_WRAP or Base64.NO_PADDING)
     }
 
     fun stenographyDecoding(picturePath: String): String {
