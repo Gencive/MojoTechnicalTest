@@ -11,7 +11,7 @@ class DecodingManager {
     }
 
     fun stenographyDecoding(picturePath: String): String {
-        val pixels = ImageUtils.imagePathToRgbValues(picturePath)
+        val pixels = ImageUtils.imagePathToRgbValues(picturePath) // Heaviest part of the decoding.
         return checkValue(pixels, mutableListOf(), 0, 0, 0, false, "")
     }
 

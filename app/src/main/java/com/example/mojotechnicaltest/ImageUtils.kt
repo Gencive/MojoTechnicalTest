@@ -38,6 +38,10 @@ object ImageUtils {
         return pixels
     }
 
+    /**
+     * Large image will be very long to decode.
+     * We should use glide to reduce image size.
+     */
     fun imageUriToBytesArray(context: Context, uri: Uri, callback: (ByteArray) -> Unit) {
         Glide.with(context)
             .asBitmap()

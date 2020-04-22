@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(),
     private fun displayEncodedList() {
         showLoadingScreen("Decoding your pictures")
 
-        GlobalScope.launch {
+        Thread() { // Thread here because coroutine are too light for a recursive algorithm.
             stenographyManager.getEncodedItems(this@MainActivity).let {
 
                 GlobalScope.launch(Dispatchers.Main) {
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity(),
                     encodedItemsAdapter.setData(it)
                 }
             }
-        }
+        }.start()
     }
 
     override fun onEncodeAction(textToEncode: String) {
