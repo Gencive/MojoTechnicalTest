@@ -4,6 +4,7 @@ import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class EncodingManager {
 
@@ -14,14 +15,21 @@ class EncodingManager {
     fun stenographyEncoding(
         picturePath: ByteArray,
         messageToEncode: String,
+        onError: (Exception) -> Unit,
         callback: (String) -> Unit
     ) {
         GlobalScope.launch {
-            val encodedPicture =
-                apiManager.encodePictureAndText(toBase64(picturePath), messageToEncode)
+            try {
+                val encodedPicture =
+                    apiManager.encodePictureAndText(toBase64(picturePath), messageToEncode)
 
-            GlobalScope.launch(Dispatchers.Main) {
-                callback.invoke(encodedPicture)
+                GlobalScope.launch(Dispatchers.Main) {
+                    callback.invoke(encodedPicture)
+                }
+            } catch (e: Exception) {
+                GlobalScope.launch(Dispatchers.Main) {
+                    onError(e)
+                }
             }
         }
     }

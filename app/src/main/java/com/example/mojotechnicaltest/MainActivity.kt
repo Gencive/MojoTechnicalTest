@@ -3,13 +3,17 @@ package com.example.mojotechnicaltest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.system.ErrnoException
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity(),
@@ -103,11 +107,31 @@ class MainActivity : AppCompatActivity(),
             showLoadingScreen("Encoding your picture")
 
             ImageUtils.imageUriToBytesArray(this, it) { byteArray ->
-                stenographyManager.encodeTextAndPicture(this, byteArray, textToEncode) {
+                stenographyManager.encodeTextAndPicture(
+                    this,
+                    byteArray,
+                    textToEncode,
+                    ::displayError
+                ) {
                     displayEncodedList()
                 }
             }
         }
+    }
+
+    private fun displayError(exception: Exception) {
+        val errorMessage = when (exception) {
+            is ErrnoException -> "Encoding has failed, check your network connection."
+            is IOException -> "Something went wrong during the encoding."
+            else -> "Something went wrong during the encoding."
+        }
+
+        lLoading.visibility = View.GONE
+        Toast.makeText(
+            this,
+            errorMessage,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun showLoadingScreen(text: String) {

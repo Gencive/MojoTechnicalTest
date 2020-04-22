@@ -2,6 +2,7 @@ package com.example.mojotechnicaltest
 
 import android.content.Context
 import com.example.mojotechnicaltest.models.EncodedItem
+import java.lang.Exception
 
 
 class StenographyManager {
@@ -13,9 +14,10 @@ class StenographyManager {
         context: Context,
         byteArray: ByteArray,
         textToEncode: String,
+        onError: (Exception) -> Unit,
         onSuccess: () -> Unit
     ) {
-        encodingManager.stenographyEncoding(byteArray, textToEncode) { encodedRes ->
+        encodingManager.stenographyEncoding(byteArray, textToEncode, onError = onError) { encodedRes ->
             ImageUtils.saveBytesAsImageOnDisk(context, decodingManager.fromBase64(encodedRes))
             onSuccess()
         }
