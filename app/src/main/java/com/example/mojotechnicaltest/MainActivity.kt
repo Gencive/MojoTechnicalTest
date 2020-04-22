@@ -3,9 +3,13 @@ package com.example.mojotechnicaltest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity(),
@@ -55,9 +59,22 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun displayEncodedList() {
-        stenographyManager.getEncodedItems(this).let {
-            encodedItemsAdapter.setData(it)
+        showLoadingScreen("Decoding your pictures")
+
+        GlobalScope.launch {
+            stenographyManager.getEncodedItems(this@MainActivity).let {
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    lLoading.visibility = View.GONE
+                    encodedItemsAdapter.setData(it)
+                }
+            }
         }
+    }
+
+    override fun onEncodeAction(textToEncode: String) {
+        this.textToEncode = textToEncode
+        startFilePicker()
     }
 
     private fun startFilePicker() {
@@ -72,11 +89,6 @@ class MainActivity : AppCompatActivity(),
         )
     }
 
-    override fun onEncodeAction(textToEncode: String) {
-        this.textToEncode = textToEncode
-        startFilePicker()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_SELECT_PICTURE) {
@@ -88,11 +100,18 @@ class MainActivity : AppCompatActivity(),
 
     private fun handleFilePickerResult(data: Intent?) {
         data?.data?.let {
+            showLoadingScreen("Encoding your picture")
+
             ImageUtils.imageUriToBytesArray(this, it) { byteArray ->
                 stenographyManager.encodeTextAndPicture(this, byteArray, textToEncode) {
                     displayEncodedList()
                 }
             }
         }
+    }
+
+    private fun showLoadingScreen(text: String) {
+        lLoading.visibility = View.VISIBLE
+        tvStatus.text = text
     }
 }
