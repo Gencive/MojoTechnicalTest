@@ -41,7 +41,7 @@ class DecodingManager {
                 return handleTableUpdating(pxVal, message, pixels, x, y, usedPxCoor)
             }
 
-            pxVal == 26 -> { // Must update the subtable next
+            pxVal == 26 -> { // Must update the sub table next
                 val (nextX, nextY) = computeNextCoordinates(pixels, x, y)
                 usedPxCoor.add(x to y)
                 return checkValue(pixels, usedPxCoor, nextX, nextY, tableN, true, message)
@@ -111,11 +111,11 @@ class DecodingManager {
      * Get the coordinates of the next pixels closest to X & Y
      */
     private fun getNextCoordinates(list: List<List<Pixel>>, x: Int, y: Int): Pair<Int, Int> {
-        val targetY = (y + 1) % list[x].size
-        val targetX = if (targetY < y) {
-            (x + 1) % list.size
+        val targetX = (x + 1) % list.size
+        val targetY = if (targetX < x) {
+            (y + 1) % list.size
         } else {
-            x
+            y
         }
 
         return targetX to targetY

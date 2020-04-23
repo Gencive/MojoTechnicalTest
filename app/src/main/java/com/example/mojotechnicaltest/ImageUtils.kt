@@ -80,6 +80,12 @@ object ImageUtils {
         fos.close()
     }
 
+    fun getFilesOnEncodedDir(context: Context): List<String> {
+        return getEncodedDir(context).listFiles()?.map { file ->
+            file.path
+        } ?: listOf()
+    }
+
     private fun getEncodedDir(context: Context): File {
         return File(context.filesDir, ENCODED_DIR_NAME).also { encodedDir ->
             if (!encodedDir.exists()) {
@@ -88,9 +94,4 @@ object ImageUtils {
         }
     }
 
-    fun getFilesOnEncodedDir(context: Context): List<String> {
-        return getEncodedDir(context).listFiles()?.map { file ->
-            file.path
-        } ?: listOf()
-    }
 }
