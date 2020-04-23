@@ -81,9 +81,7 @@ object ImageUtils {
     }
 
     fun getFilesOnEncodedDir(context: Context): List<String> {
-        return getEncodedDir(context).listFiles()?.map { file ->
-            file.path
-        } ?: listOf()
+        return getEncodedDir(context).listFiles()?.map { it.path } ?: listOf()
     }
 
     private fun getEncodedDir(context: Context): File {

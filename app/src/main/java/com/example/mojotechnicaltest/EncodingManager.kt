@@ -8,9 +8,10 @@ import java.lang.Exception
 
 class EncodingManager {
 
-    private val apiManager = ApiManager()
+    private val apiManager by lazy { ApiManager() }
 
-    private fun toBase64(toEncrypt: ByteArray): String = Base64.encodeToString(toEncrypt, Base64.DEFAULT)
+    private fun toBase64(toEncrypt: ByteArray): String =
+        Base64.encodeToString(toEncrypt, Base64.DEFAULT)
 
     fun stenographyEncoding(
         picturePath: ByteArray,
@@ -18,7 +19,7 @@ class EncodingManager {
         onError: (Exception) -> Unit,
         onSuccess: (String) -> Unit
     ) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
                 val encodedPicture =
                     apiManager.encodePictureAndText(toBase64(picturePath), messageToEncode)
@@ -33,5 +34,4 @@ class EncodingManager {
             }
         }
     }
-
 }
