@@ -20,7 +20,9 @@ class ApiManager {
         }
     }
 
-    // Todo: handle error
+    /**
+     * Encode the text in the provided picture and return the Base64 encoded picture.
+     */
     suspend fun encodePictureAndText(picture: String, text: String): String {
         val apiConnection = getApiConnection()
         val os: OutputStream = apiConnection.outputStream

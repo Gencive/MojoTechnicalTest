@@ -65,10 +65,10 @@ class MainActivity : AppCompatActivity(),
     private fun displayEncodedList() {
         showLoadingScreen("Decoding your pictures")
 
-        Thread() { // Thread here because coroutine are too light for a recursive algorithm.
+        Thread { // Thread here because coroutine are too light for a recursive algorithm.
             stenographyManager.getEncodedItems(this@MainActivity).let {
 
-                GlobalScope.launch(Dispatchers.Main) {
+                GlobalScope.launch(Dispatchers.Main) { // Back on UI
                     lLoading.visibility = View.GONE
                     encodedItemsAdapter.setData(it)
                 }
@@ -111,10 +111,9 @@ class MainActivity : AppCompatActivity(),
                     this,
                     byteArray,
                     textToEncode,
-                    ::displayError
-                ) {
-                    displayEncodedList()
-                }
+                    ::displayError,
+                    ::displayEncodedList
+                )
             }
         }
     }

@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object ImageUtils {
+    private const val ENCODED_DIR_NAME = "encoded"
+
     fun imagePathToRgbValues(imagePath: String): List<List<Pixel>> {
         val imageBitmap = BitmapFactory.decodeFile(imagePath)
 
@@ -52,7 +54,7 @@ object ImageUtils {
                     transition: Transition<in Bitmap>?
                 ) {
                     val stream = ByteArrayOutputStream()
-                    resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    resource.compress(Bitmap.CompressFormat.JPEG, 30, stream)
                     val byteArray: ByteArray = stream.toByteArray()
 
                     callback(byteArray)
@@ -79,7 +81,7 @@ object ImageUtils {
     }
 
     private fun getEncodedDir(context: Context): File {
-        return File(context.filesDir, "encoded").also { encodedDir ->
+        return File(context.filesDir, ENCODED_DIR_NAME).also { encodedDir ->
             if (!encodedDir.exists()) {
                 encodedDir.mkdir()
             }
@@ -87,11 +89,8 @@ object ImageUtils {
     }
 
     fun getFilesOnEncodedDir(context: Context): List<String> {
-        val encodedFiles = mutableListOf<String>()
-
-        getEncodedDir(context).listFiles()?.forEach { file ->
-            encodedFiles.add(file.path)
-        }
-        return encodedFiles
+        return getEncodedDir(context).listFiles()?.map { file ->
+            file.path
+        } ?: listOf()
     }
 }

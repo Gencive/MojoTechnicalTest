@@ -16,7 +16,7 @@ class EncodingManager {
         picturePath: ByteArray,
         messageToEncode: String,
         onError: (Exception) -> Unit,
-        callback: (String) -> Unit
+        onSuccess: (String) -> Unit
     ) {
         GlobalScope.launch {
             try {
@@ -24,7 +24,7 @@ class EncodingManager {
                     apiManager.encodePictureAndText(toBase64(picturePath), messageToEncode)
 
                 GlobalScope.launch(Dispatchers.Main) {
-                    callback.invoke(encodedPicture)
+                    onSuccess(encodedPicture)
                 }
             } catch (e: Exception) {
                 GlobalScope.launch(Dispatchers.Main) {
