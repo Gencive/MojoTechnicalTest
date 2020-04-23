@@ -1,11 +1,12 @@
 package com.example.mojotechnicaltest
 
+import android.graphics.Point
 import android.util.Base64
+import android.util.Log
 import com.example.mojotechnicaltest.models.Pixel
 
 class DecodingManager {
 
-    // Todo, check why it's end by null
     fun fromBase64(toDecode: String): ByteArray {
         return Base64.decode(toDecode, Base64.NO_WRAP or Base64.NO_PADDING)
     }
@@ -17,6 +18,7 @@ class DecodingManager {
 
     /**
      * Recursive Pixel Data chain decoding algorithm.
+     * Recursive mean it can crash on some low device. or if the text is too long.
      */
     private fun checkValue(
         pixels: List<List<Pixel>>,
@@ -30,7 +32,7 @@ class DecodingManager {
         val pxVal = pixelToValue(pixels[x][y])
 
         when {
-            usedPxCoor.contains(x to y) -> { // If pixels is already used we move to the next one.
+            usedPxCoor.contains(x to y) -> { // If pixel is already used we move to the next one.
                 val (nextX, nextY) = getNextCoordinates(pixels, x, y)
                 return checkValue(pixels, usedPxCoor, nextX, nextY, tableN, updateTable, message)
             }
@@ -41,7 +43,8 @@ class DecodingManager {
 
             pxVal == 26 -> { // Must update the subtable next
                 val (nextX, nextY) = computeNextCoordinates(pixels, x, y)
-                return checkValue(pixels, usedPxCoor, nextX, nextY, 0, true, message)
+                usedPxCoor.add(x to y)
+                return checkValue(pixels, usedPxCoor, nextX, nextY, tableN, true, message)
             }
 
             else -> { // Add the converted pixel to char to the message.
@@ -68,6 +71,7 @@ class DecodingManager {
 
             in 0..16 -> { // next Ascii sub table value
                 val (nextX, nextY) = computeNextCoordinates(pixels, x, y)
+                usedPxCoor.add(x to y)
                 checkValue(pixels, usedPxCoor, nextX, nextY, pxVal, false, message)
             }
 
@@ -100,22 +104,7 @@ class DecodingManager {
      * Compute the next pixel coordinates according to the Pixel Data Chain Algorithm.
      */
     private fun computeNextCoordinates(pixels: List<List<Pixel>>, x: Int, y: Int): Pair<Int, Int> {
-        val totalX = pixels[x][y] + x
-        val totalY = pixels[x][y] + y
-
-        val targetX = if (totalX > pixels.lastIndex) {
-            totalX % pixels.size
-        } else {
-            totalX
-        }
-
-        val targetY = if (totalY > pixels[x].lastIndex) {
-            totalY % pixels[x].size
-        } else {
-            totalY
-        }
-
-        return targetX to targetY
+        return (pixels[x][y] + x) % pixels.size  to (pixels[x][y] + y) % pixels[x].size
     }
 
     /**
@@ -124,9 +113,7 @@ class DecodingManager {
     private fun getNextCoordinates(list: List<List<Pixel>>, x: Int, y: Int): Pair<Int, Int> {
         val targetY = (y + 1) % list[x].size
         val targetX = if (targetY < y) {
-            x + 1
-        } else if (x == list.lastIndex) {
-            0
+            (x + 1) % list.size
         } else {
             x
         }
